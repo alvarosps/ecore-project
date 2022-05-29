@@ -1,4 +1,4 @@
-import ReactDOM from 'reac-dom';
+import ReactDOM from 'react-dom';
 import React from 'react';
 
 const App = () => {
