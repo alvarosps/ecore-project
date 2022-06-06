@@ -21,7 +21,7 @@ const RoutesTree = () => {
     );
 
     return (
-        <AppContext.Provider value={value}>
+        <AppContext.Provider value={value} >
             <Routes>
                 <Route path={'/'} element={<App />} />
                 <Route path='/teams/:id' element={<Team />} />

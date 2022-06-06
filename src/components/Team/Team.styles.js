@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import ListItemText from '@mui/material/ListItemText';
 
 export const Background = styled.div`
     background-color: #151c25;
@@ -16,8 +17,17 @@ export const ListContainer = styled.div`
     max-width: 360px;
 `;
 
-export const TeamName = styled.div`
-    color:#fff;
-    font-weight: bold;
-    margin-top: 10px;
+export const TeamName = styled(ListItemText)`
+    span {
+        color:#fff;
+        font-weight: bold;
+        margin-top: 10px;
+        font-size: 1.25rem;
+    }
 `;
+
+export const TeamLead = styled(ListItemText)`
+    p {
+        color: #fff;
+    }
+`

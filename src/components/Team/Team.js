@@ -17,18 +17,18 @@ import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import Button from '@mui/material/Button';
 import ListItemButton from '@mui/material/ListItemButton';
 
-import { Background, ListContainer, TeamName } from './Team.styles';
+import { Background, ListContainer, TeamLead, TeamName } from './Team.styles';
 
 const teamsApiUrl = 'https://cgjresszgg.execute-api.eu-west-1.amazonaws.com/teams/';
+const usersApiUrl = 'https://cgjresszgg.execute-api.eu-west-1.amazonaws.com/users/';
 
 const Team = () => {
     const { id } = useParams();
-    const { state, setState } = useContext(AppContext);
     const [team, setTeam] = useState(undefined)
 
     const [teamLead, setTeamLead] = useState('');
-    const [teamMembers, setTeamMembers] = useState([]);
     const [teamMembersToShow, setTeamMembersToShow] = useState([]);
+    const [teamMembersData, setTeamMemberData] = useState([]);
 
     useEffect(() => {
         const getTeam = async () => {
@@ -40,13 +40,22 @@ const Team = () => {
     }, []);
 
     useEffect(() => {
-        if (team) {
-            const lead = state.users.find((user) => user.id === team.teamLeadId);
+        const getUsersData = async () => {
+            const teamMemberIds = [team.teamLeadId, ...team.teamMemberIds];
+            const apiUrlsForTeamMembers = teamMemberIds.map((id) => usersApiUrl + id);
+
+            const results = await Promise.all(apiUrlsForTeamMembers.map(async (apiUrl) => {
+                const result = await axios.get(apiUrl);
+
+                return result.data;
+            }));
+
+            setTeamMemberData(results);
+            setTeamMembersToShow(results);
+            const lead = results.find((user) => user.id === team.teamLeadId);
             setTeamLead(lead.displayName);
-            const members = state.users.filter((user) => team.teamMemberIds.includes(user.id));
-            setTeamMembers([lead, ...members]);
-            setTeamMembersToShow([lead, ...members]);
         }
+        if (team) getUsersData();
     }, [team]);
 
     const updateTeamMembers = (newTeamMembers) => {
@@ -58,9 +67,9 @@ const Team = () => {
             <CssBaseline />
             <Container max-width='lg'>
                 <Box sx={{ bgcolor: '#1a2027', height: '100vh', flexGrow: 1}}>
-                    {teamMembers.length > 0 &&
+                    {teamMembersData.length > 0 &&
                         <SearchInput
-                            data={teamMembers}
+                            data={teamMembersData}
                             dataProperty='displayName'
                             onChange={updateTeamMembers}
                             placeholder='Search for Member'
@@ -68,32 +77,29 @@ const Team = () => {
                     }
                     {team &&
                         <>
-                            <TeamName>Team: {team.name}</TeamName>
                             <ListContainer>
                                 <List sx={{ width: '100%', maxWidth: 360 }}>
+                                    <ListItem>
+                                        <TeamName primary={`Team: ${team.name}`} />
+                                    </ListItem>
                                     {teamMembersToShow.map((member, index) => {
-                                        if (member.displayName === teamLead) {
-                                            return (
-                                                <ListItem key={index} disablePadding>
-                                                    <ListItemButton>
-                                                        <ListItemAvatar>
-                                                            <Avatar>
-                                                                <AssignmentIndIcon />
-                                                            </Avatar>
-                                                        </ListItemAvatar>
-                                                        <ListItemText primary={member.displayName} secondary={null} />
-                                                    </ListItemButton>
-                                                </ListItem>
-                                            );
-                                        } else {
-                                            return (
-                                                <ListItem key={index} disablePadding>
-                                                    <ListItemButton>
-                                                        <ListItemText primary={member.displayName} secondary={null} />
-                                                    </ListItemButton>
-                                                </ListItem>
-                                            );
-                                        }
+                                        return (
+                                            <ListItem key={index} disablePadding>
+                                                <ListItemButton>
+                                                    <ListItemAvatar>
+                                                        <Avatar
+                                                            alt={`${member.firstName} ${member.lastName}`}
+                                                            src={member.avatarUrl}
+                                                            sx={{ bgcolor: '#808080', color: '#000' }}
+                                                        >
+                                                            <AssignmentIndIcon />
+                                                        </Avatar>
+                                                    </ListItemAvatar>
+                                                    {member.displayName === teamLead && <TeamLead primary={`${member.firstName} ${member.lastName}`} secondary='Team Lead' />}
+                                                    {member.displayName !== teamLead && <ListItemText primary={`${member.firstName} ${member.lastName}`} secondary={null} />}
+                                                </ListItemButton>
+                                            </ListItem>
+                                        );
                                     })}
                                 </List>
                             </ListContainer>

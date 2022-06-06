@@ -22,7 +22,6 @@ const Home = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [teams, setTeams] = useState([]);
     const [teamsFromApi, setTeamsFromApi] = useState([]);
-    const [users, setUsers] = useState([]);
 
     const currentTeams = useMemo(() => {
         const firstPageIndex = (currentPage - 1)*pageSize;
@@ -36,30 +35,22 @@ const Home = () => {
     }
 
     useEffect(() => {
-        const getTeams = async () => {
-            const response = await axios.get(teamsApiUrl);
-            
-            setState((prevState) => ({
-                teams: response.data,
-                users: prevState.users
-            }));
-            setTeams(response.data);
-            setTeamsFromApi(response.data);
+        const getTeamsAndUsers = async () => {
+            const [teamsResponse, usersResponse] = await Promise.all([
+                axios.get(teamsApiUrl),
+                axios.get(usersApiUrl)
+            ]);
+
+            setState({
+                teams: teamsResponse.data,
+                users: usersResponse.data
+            });
+            setTeams(teamsResponse.data);
+            setTeamsFromApi(teamsResponse.data);
         }
 
-        const getUsers = async () => {
-            const response = await axios.get(usersApiUrl);
-
-            setState((prevState) => ({
-                teams: prevState.teams,
-                users: response.data
-            }));
-            setUsers(response.data);
-        }
-
-        getTeams();
-        getUsers();
-    }, [])
+        getTeamsAndUsers();
+    }, []);
  
     return (
         <Background>
