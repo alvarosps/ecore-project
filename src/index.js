@@ -5,10 +5,12 @@ import "./index.css";
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import RoutesTree from "./components/RoutesTree/RoutesTree";
+import Header from "./components/Header/Header";
  
  ReactDOM.render(
     <React.StrictMode>
         <Router>
+            <Header />
             <RoutesTree />
         </Router>
     </React.StrictMode>,

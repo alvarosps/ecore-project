@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 
-const SearchInput = ({ data, dataProperty, onChange }) => {
+import { CustomInput } from './SearchInput.styles';
+
+const SearchInput = ({ data, dataProperty, onChange, placeholder = 'Search...' }) => {
     const [searchText, setSearchText] = useState('');
 
     useEffect(() => {
@@ -19,9 +21,9 @@ const SearchInput = ({ data, dataProperty, onChange }) => {
     }, [searchText]);
 
     return (
-        <input
+        <CustomInput
             value={searchText}
-            placeholder='Search...'
+            placeholder={placeholder}
             onChange={(event) => setSearchText(event.target.value)}
         />
     )
