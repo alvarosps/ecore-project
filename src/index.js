@@ -1,8 +1,16 @@
-import ReactDOM from 'react-dom';
+import "bootstrap/dist/css/bootstrap.min.css";
 import React from 'react';
+import ReactDOM from 'react-dom';
+import "./index.css";
+import { BrowserRouter as Router } from 'react-router-dom';
 
-const App = () => {
-    return <h1>This is my React app!</h1>;
-}
+import RoutesTree from "./components/RoutesTree/RoutesTree";
  
- ReactDOM.render(<App />, document.getElementById('app'));
+ ReactDOM.render(
+    <React.StrictMode>
+        <Router>
+            <RoutesTree />
+        </Router>
+    </React.StrictMode>,
+    document.getElementById('app')
+);
