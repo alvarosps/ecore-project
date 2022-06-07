@@ -4,6 +4,8 @@
 - `npm install`
 - `npm start`
 
+- To run tests: `npm run test`
+
 - About the project development:
 
 I tried to make my commits clear in terms of code/project progression, always keeping in mind results and what is needed to complete the project.
@@ -27,5 +29,4 @@ creating parallel axios calls to get the data of all team's members.
 
 As a note, the team's members avatarUrl from the api doesn't work (at least in the ones I tested), if it doesn't render, it'll render a default avatar instead.
 
-With the logic and UI done, all that was left was unit tests, currently I'm studying TDD, so I choose to leave the tests to the end, because I don't have a lot of experience
-with TDD yet, but it is something I want to do in future projects.
+After logic and UI were done, I started to work on unit tests, again facing some challenges in terms of finding documentation and examples on unit testing for React 18. I created basic examples of unit tests to run, and with more time I could work on it more, creating a 100% coverage tests.
