@@ -1,8 +1,7 @@
 import axios from 'axios';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
-import { AppContext } from '../RoutesTree/RoutesTree';
 import SearchInput from '../SearchInput/SearchInput';
 
 import CssBaseline from '@mui/material/CssBaseline';
@@ -65,7 +64,7 @@ const Team = () => {
     return (
         <Background>
             <CssBaseline />
-            <Container max-width='lg'>
+            <Container max-width='lg' data-testid='team'>
                 <Box sx={{ bgcolor: '#1a2027', height: '100vh', flexGrow: 1}}>
                     {teamMembersData.length > 0 &&
                         <SearchInput

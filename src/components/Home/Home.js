@@ -1,10 +1,9 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import TeamCard from '../TeamCard/TeamCard';
 import Pagination from '../Pagination/Pagination';
 import axios from 'axios';
 import SearchInput from '../SearchInput/SearchInput';
 import { Link } from 'react-router-dom';
-import { AppContext } from '../RoutesTree/RoutesTree';
 
 import CssBaseline from '@mui/material/CssBaseline';
 import Container from '@mui/material/Container';
@@ -15,10 +14,8 @@ import { Background, TeamsGrid } from './Home.styles';
 
 let pageSize = 18;
 const teamsApiUrl = 'https://cgjresszgg.execute-api.eu-west-1.amazonaws.com/teams/';
-const usersApiUrl = 'https://cgjresszgg.execute-api.eu-west-1.amazonaws.com/users/';
 
 const Home = () => {
-    const { state, setState } = useContext(AppContext);
     const [currentPage, setCurrentPage] = useState(1);
     const [teams, setTeams] = useState([]);
     const [teamsFromApi, setTeamsFromApi] = useState([]);
@@ -35,21 +32,14 @@ const Home = () => {
     }
 
     useEffect(() => {
-        const getTeamsAndUsers = async () => {
-            const [teamsResponse, usersResponse] = await Promise.all([
-                axios.get(teamsApiUrl),
-                axios.get(usersApiUrl)
-            ]);
+        const getTeams = async () => {
+            const teamsResponse = await axios.get(teamsApiUrl);
 
-            setState({
-                teams: teamsResponse.data,
-                users: usersResponse.data
-            });
             setTeams(teamsResponse.data);
             setTeamsFromApi(teamsResponse.data);
         }
 
-        getTeamsAndUsers();
+        getTeams();
     }, []);
  
     return (
@@ -63,7 +53,11 @@ const Home = () => {
                         onChange={updateTeams}
                         placeholder='Search for Teams...'
                     />
-                    <TeamsGrid container spacing={{ xs: 2, md: 3 }} columns={{ xs: 4, sm: 8, md: 12 }}>
+                    <TeamsGrid
+                        data-testid='home'
+                        container spacing={{ xs: 2, md: 3 }}
+                        columns={{ xs: 4, sm: 8, md: 12 }}
+                    >
                         {currentTeams.map((team, index) => (
                             <Grid item xs={2} sm={4} md={4} key={index}>
                                 <Link
@@ -83,7 +77,7 @@ const Home = () => {
                         currentPage={currentPage}
                         totalCount={teams.length}
                         pageSize={pageSize}
-                        onPageChange={(page) => { console.log('currentPage', currentPage); console.log('page', page); setCurrentPage(page); }}
+                        onPageChange={(page) => { setCurrentPage(page); }}
                     />
                 </Box>
             </Container>
